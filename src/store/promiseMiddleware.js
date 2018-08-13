@@ -11,13 +11,8 @@ export default function promiseMiddleware() {
       if (res.status === 200) {
         return res
           .json()
-          .then(result => {
-            console.log(result);
-            return next({ ...rest, result, type: types.success })
-          })
-          .catch(error => {
-            next({ ...rest, error, type: types.failed });
-          });
+          .then(result => next({ ...rest, result, type: types.success }))
+          .catch(error => next({ ...rest, error, type: types.failed }));
       }
       return res
         .json()

@@ -16,6 +16,10 @@ export const HeaderWrapper = styled("div")`
   width: 100%;
   height: 55px;
   background-color: #42b549;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
 `;
 
 export const Logo = styled("img")`

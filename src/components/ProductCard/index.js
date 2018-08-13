@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { Link } from "react-router-dom";
-import { string, number } from "prop-types";
+import { string, number, arrayOf, object } from "prop-types";
 
 // Assets
 import {
@@ -10,19 +10,19 @@ import {
   CardPrice,
   CardInfo,
   CardLink,
-  BrandName,
+  BrandName
 } from "./style";
 
 class ProductCard extends PureComponent {
   render() {
-    const { imageUrl, brand, name, price, codeitem } = this.props;
+    const { imageUrl, brand, name, price, slug } = this.props;
 
     return (
       <CardContainer>
         <Link
           onClick={this.handleProductClick}
           className={CardLink}
-          to={`/p/${codeitem}`}
+          to={`/p/${slug}`}
         >
           <img className={CardImages} alt={name} src={imageUrl} />
         </Link>
@@ -31,7 +31,7 @@ class ProductCard extends PureComponent {
             onClick={this.handleProductClick}
             data-cy="prodNameLink"
             className={CardLink}
-            to={`/p/${codeitem}`}
+            to={`/p/${slug}`}
           >
             <CardName>{name}</CardName>
             <BrandName>{brand}</BrandName>
@@ -49,7 +49,9 @@ ProductCard.propTypes = {
   brand: string.isRequired,
   price: string.isRequired,
   imageUrl: string.isRequired,
-  codeitem: string.isRequired
+  codeitem: string.isRequired,
+  slug: string.isRequired,
+  variant: arrayOf(object).isRequired
 };
 
 export default ProductCard;

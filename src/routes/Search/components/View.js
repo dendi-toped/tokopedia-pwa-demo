@@ -1,16 +1,19 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
-import { func, bool, arrayOf, object } from "prop-types";
+import { func, bool, arrayOf, object, string } from "prop-types";
 
 import { getSearchProduct } from "../../../modules/Search";
 import ProductCard from "../../../components/ProductCard";
-import { ProductRow } from './style'
+import { ProductWrap, ProductRow, LoadMore, CenterText } from "./style";
 
 class SearchView extends Component {
   static propTypes = {
+    data: arrayOf(object),
+    error: string.isRequired,
     getSearchProduct: func.isRequired,
     loading: bool.isRequired,
-    data: arrayOf(object)
+    pagination: object.isRequired,
+    query: string.isRequired
   };
 
   static defaultProps = {
@@ -18,43 +21,83 @@ class SearchView extends Component {
   };
 
   componentDidMount() {
-    this.props.getSearchProduct("", 1);
+    const { query, getSearchProduct } = this.props;
+
+    getSearchProduct(query, 1);
   }
 
-  render() {
-    const { data, loading } = this.props;
+  fetchMore = () => {
+    const { pagination, query, getSearchProduct } = this.props;
+    const page = pagination.current || 0;
 
-    if (loading || data.length === 0) {
-      return "Loading...";
+    getSearchProduct(query, page + 1);
+  };
+
+  render() {
+    const { data, loading, pagination, error } = this.props;
+
+    if (loading && data.length === 0) {
+      return (
+        <ProductWrap>
+          <CenterText>Loading..</CenterText>
+        </ProductWrap>
+      );
+    }
+
+    if (data.length === 0 && error === "") {
+      return (
+        <ProductWrap>
+          <CenterText>Product Not Found</CenterText>
+        </ProductWrap>
+      );
     }
 
     return (
-      <Fragment>
+      <ProductWrap>
         {data.length > 0 &&
-          data.map(product => {
-            const { id, name, brand, price, imageUrl, codeitem } = product;
+          data.map((product, index) => {
+            const {
+              id,
+              name,
+              slug,
+              brand,
+              price,
+              imageUrl,
+              codeitem,
+              variant
+            } = product;
 
             return (
-              <ProductRow>
+              <ProductRow key={`productRow${index}`}>
                 <ProductCard
                   id={id}
                   name={name}
+                  slug={slug}
                   brand={brand}
                   price={price}
                   imageUrl={imageUrl}
                   codeitem={codeitem}
+                  variant={variant}
                 />
               </ProductRow>
             );
           })}
-      </Fragment>
+        {pagination.next && (
+          <LoadMore onClick={this.fetchMore}>
+            {loading ? "Loading.." : "Load More"}
+          </LoadMore>
+        )}
+      </ProductWrap>
     );
   }
 }
 
 const mapStateToProps = ({ search }) => ({
+  query: search.query,
   loading: search.productRequest,
-  data: search.product
+  data: search.product,
+  pagination: search.pagination,
+  error: search.productError
 });
 
 export default connect(
