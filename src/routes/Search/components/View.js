@@ -36,12 +36,8 @@ class SearchView extends Component {
   render() {
     const { data, loading, pagination, error } = this.props;
 
-    if (loading && data.length === 0) {
-      return (
-        <ProductWrap>
-          <CenterText>Loading..</CenterText>
-        </ProductWrap>
-      );
+    if (loading || data.length === 0) {
+      return (<div><img src={LogoGrey} /></div>);
     }
 
     if (data.length === 0 && error === "") {
