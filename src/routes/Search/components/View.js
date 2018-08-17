@@ -5,6 +5,7 @@ import { func, bool, arrayOf, object, string } from "prop-types";
 import { getSearchProduct } from "../../../modules/Search";
 import ProductCard from "../../../components/ProductCard";
 import { ProductWrap, ProductRow, LoadMore, CenterText } from "./style";
+import LogoGrey from "../../../assets/images/lite-loading.png"
 
 class SearchView extends Component {
   static propTypes = {
